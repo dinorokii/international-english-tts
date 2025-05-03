@@ -73,6 +73,34 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
 </script>
+  <h1>Type in the box below</h1>
+  <textarea id="textInput" rows="5" cols="50" placeholder="Type here..."></textarea>
+
+  <script>
+    let allowedWords = [];
+
+    // Load the words.txt file
+    fetch('words.txt')
+      .then(response => response.text())
+      .then(data => {
+        allowedWords = data.split('\n').map(word => word.trim().toLowerCase());
+      });
+
+    const textInput = document.getElementById('textInput');
+
+    textInput.addEventListener('input', () => {
+      const inputText = textInput.value;
+      const words = inputText.trim().split(/\s+/);
+
+      for (let word of words) {
+        if (word && !allowedWords.includes(word.toLowerCase())) {
+          // Redirect if a word is not allowed
+          window.location.href = "/error.html"; // Change to your redirect page
+          break;
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>
