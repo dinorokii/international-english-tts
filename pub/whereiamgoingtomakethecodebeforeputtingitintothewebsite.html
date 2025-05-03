@@ -94,11 +94,6 @@ function closeNav() {
     checkButton.addEventListener('click', () => {
       const inputText = textInput.value;
       const words = inputText.trim().split(/\s+/);
-    })
-
-    textInput.addEventListener('input', () => {
-      const inputText = textInput.value;
-      const words = inputText.trim().split(/\s+/);
 
       for (let word of words) {
         if (word && !allowedWords.includes(word.toLowerCase())) {
