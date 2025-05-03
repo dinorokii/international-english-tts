@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -55,7 +55,7 @@
 <!-- Side navigation -->
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a class="active" href="index.html">Home</a>
+  <a href="index.html">Home</a>
   <a href="questions.html">Questions</a>
   <a href="tts.html">IETTS</a>
 </div>
@@ -73,37 +73,9 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
 </script>
-  <h1>Type in the box below</h1>
-  <textarea id="textInput" rows="5" cols="50" placeholder="Type here..."></textarea>
-  <br>
-  <button id="checkbutton">Send</button>
 
-  <script>
-    let allowedWords = [];
-
-    // Load the words.txt file
-    fetch('words.txt')
-      .then(response => response.text())
-      .then(data => {
-        allowedWords = data.split('\n').map(word => word.trim().toLowerCase());
-      });
-
-    const textInput = document.getElementById('textInput');
-    const checkButton = document.getElementById('checkbutton')
-
-    checkButton.addEventListener('click', () => {
-      const inputText = textInput.value;
-      const words = inputText.trim().split(/\s+/);
-
-      for (let word of words) {
-        if (word && !allowedWords.includes(word.toLowerCase())) {
-          // Redirect if a word is not allowed
-          window.location.href = "/add.html";
-          return;
-        }
-      }
-    });
-  </script>
-
+<h1>Would you like to record a new word?</h1>
+<br>
+<button id="checkbutton" href="fun.html">Yes</button>
+<button id="checkbutton" href="whereiamgoingtomakethecodebeforeputtingitintothewebsite.html">No</button>
 </body>
-</html>
