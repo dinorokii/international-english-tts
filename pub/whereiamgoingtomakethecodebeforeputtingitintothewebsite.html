@@ -75,6 +75,8 @@ function closeNav() {
 </script>
   <h1>Type in the box below</h1>
   <textarea id="textInput" rows="5" cols="50" placeholder="Type here..."></textarea>
+  <br>
+  <button id="checkbutton">Send</button>
 
   <script>
     let allowedWords = [];
@@ -87,6 +89,12 @@ function closeNav() {
       });
 
     const textInput = document.getElementById('textInput');
+    const checkButton = document.getElementById('checkbutton')
+
+    checkButton.addEventListener('click', () => {
+      const inputText = textInput.value;
+      const words = inputText.trim().split(/\s+/);
+    })
 
     textInput.addEventListener('input', () => {
       const inputText = textInput.value;
@@ -95,8 +103,8 @@ function closeNav() {
       for (let word of words) {
         if (word && !allowedWords.includes(word.toLowerCase())) {
           // Redirect if a word is not allowed
-          window.location.href = "/error.html"; // Change to your redirect page
-          break;
+          window.location.href = "/fun.html";
+          return;
         }
       }
     });
