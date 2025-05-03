@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -76,6 +76,18 @@ function closeNav() {
 
 <h1>Would you like to record a new word?</h1>
 <br>
-<button id="checkbutton" href="fun.html">Yes</button>
-<button id="checkbutton" href="whereiamgoingtomakethecodebeforeputtingitintothewebsite.html">No</button>
+<button id="YesButton">Yes</button>
+<button id="NoButton">No</button>
+
+<script type="text/javascript">
+    document.getElementById("YesButton").onclick = function () {
+        location.href = "https://dinoroki.hackclub.app/fun.html";
+    };
+</script>
+
+<script type="text/javascript">
+    document.getElementById("NoButton").onclick = function () {
+        location.href = "https://dinoroki.hackclub.app/whereiamgoingtomakethecodebeforeputtingitintothewebsite.html";
+    };
+</script>
 </body>
