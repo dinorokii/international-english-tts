@@ -55,7 +55,7 @@
 <!-- Side navigation -->
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="index.html">Home</a>
+  <a class="active" href="index.html">Home</a>
   <a href="questions.html">Questions</a>
   <a href="tts.html">IETTS</a>
 </div>
@@ -73,18 +73,15 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
 </script>
+  <h1>What word would you like to record? (You can always come back to do another.)</h1>
+  <textarea id="textInput" rows="5" cols="50" placeholder="One word only please, connect certain phrases like «in between» with a hyphen."></textarea>
+  <br>
+  <button id="record">Record!</button>
 
-<h1>Would you like to record a new word?</h1>
-<br>
-<button id="YesButton">Yes</button>
-<button id="NoButton">No</button>
-
-<script type="text/javascript">
-    document.getElementById("YesButton").onclick = function () {
-        location.href = "https://dinoroki.hackclub.app/whichword.html";
-    };
-    document.getElementById("NoButton").onclick = function () {
-        location.href = "https://dinoroki.hackclub.app/whereiamgoingtomakethecodebeforeputtingitintothewebsite.html";
-    };
-</script>
-</body>
+  <script>
+    document.getElementById('record').addEventListener('click', () => {
+        const theword = document.getElementById('textInput').value;
+        console.log("User typed:", theword);
+      window.location.href = "/fun.html";
+    });
+  </script>
