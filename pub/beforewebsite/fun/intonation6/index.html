@@ -63,7 +63,7 @@
   <a class="active" href="/">Home</a>
   <a href="/questions">Questions</a>
   <a href="/beforewebsite">IETTS</a>
-  <a href="/beforewebsite/add">Record</a>
+  <a href="/beforewebsite/whichword">Record</a>
 </div>
 
 <!-- Open buttons (outside the sidenav) -->
@@ -105,7 +105,7 @@ function closeNav() {
   <script>
 function saveToServer(blob) {
   const formData = new FormData();
-  formData.append('audio', blob, 'recording.wav');
+  formData.append('audio', blob, `${word}-6.wav`);
 
   fetch('/audio-files', {
     method: 'POST',
@@ -234,7 +234,7 @@ function saveToServer(blob) {
     }
 
     function saveToIndexedDB(blob) {
-  const request = indexedDB.open("audioDB", 1);
+  const request = indexedDB.open("audioDB6", 1);
   request.onupgradeneeded = event => {
     const db = event.target.result;
     if (!db.objectStoreNames.contains("clips")) {
@@ -252,7 +252,7 @@ function saveToServer(blob) {
      }
 
      document.getElementById("redo").onclick = function () {
-       const request = indexedDB.open("audioDB", 1);
+       const request = indexedDB.open("audioDB6", 1);
        request.onsuccess = event => {
          const db = event.target.result;
          const tx = db.transaction("clips", "readwrite");
