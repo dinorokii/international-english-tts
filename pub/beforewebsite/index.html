@@ -57,7 +57,8 @@
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a class="active" href="/">Home</a>
   <a href="/questions">Questions</a>
-  <a href="/tts">IETTS</a>
+  <a href="/beforewebsite">IETTS</a>
+  <a href="/add">Record</a>
 </div>
 
 <!-- Open buttons (outside the sidenav) -->
@@ -98,7 +99,7 @@ function closeNav() {
       for (let word of words) {
         if (word && !allowedWords.includes(word.toLowerCase())) {
           // Redirect if a word is not allowed
-          window.location.href = "/beforewebsite/add";
+          window.location.href = "/beforewebsite/add" + '?word=' + word;;
           return;
         }
       }

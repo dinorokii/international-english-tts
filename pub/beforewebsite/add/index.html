@@ -56,7 +56,8 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <a class="active" href="/">Home</a>
     <a href="/questions">Questions</a>
-    <a href="/tts">IETTS</a>
+    <a href="/beforewebsite">IETTS</a>
+    <a href="/add">Record</a>
   </div>
   
 
@@ -74,17 +75,25 @@ function closeNav() {
 }
 </script>
 
-<h1>Would you like to record a new word?</h1>
+<h1 id="notword"> is currently not a word in the website.</h1>
+<h1>Would you like to record it?</h1>
 <br>
 <button id="YesButton">Yes</button>
 <button id="NoButton">No</button>
 
 <script type="text/javascript">
     document.getElementById("YesButton").onclick = function () {
-        location.href = "/beforewebsite/whichword";
+        location.href = `/beforewebsite/fun/intonation1?word=${word}`;
     };
     document.getElementById("NoButton").onclick = function () {
         location.href = "/beforewebsite";
     };
+
+    const params = new URLSearchParams(window.location.search);
+    const word = params.get('word');
+  
+    if (word) {
+      document.getElementById('notword').textContent = `${word} is currently not a word in the website.`;
+    }
 </script>
 </body>
