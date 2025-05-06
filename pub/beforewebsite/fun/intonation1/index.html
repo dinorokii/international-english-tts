@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Magra:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
-  <title>Audio Recorder with Trim</title>
   <style>
     body { font-family: sans-serif; padding: 2rem; }
     button { margin: 1rem 0; }
@@ -78,18 +77,52 @@ function openNav() {
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
-</script>
-  <h1>Audio Recorder with Trim by Volume</h1>
-  <button id="record">Start Recording</button>
-  <button id="loadClips">Load Saved Clips</button>
-  <audio id="player" controls></audio>
-  <ul id="clipList"></ul>
 
+const theword = document.getElementById()
+</script>
+  <h1>Recordin' time!</h1>
+  <p id="wordchosen">Word Chosen:</p>
+  <p>Please record like the following intonation:</p>
+  <audio controls>
+    <source src="1.mp3" type="audio/mpeg">
+  </audio>
+  <br>
+  <br>
+  <audio id="player" controls></audio>
+  <br>
+  <button id="record">Start Recording</button>
+  <p id= "moveontext" style="display: none;">Nice! Now to move on. (Unless you'd like to rerecord.)</p>
+  <button id= "moveonbutton" style="display: none; margin: 0 auto;">Next Intonation</button>
   <script>
+    const params = new URLSearchParams(window.location.search);
+    const word = params.get('word');
+  
+    if (word) {
+      document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
+    }
+  </script>
+  <script>
+function saveToServer(blob) {
+  const formData = new FormData();
+  formData.append('audio', blob, 'recording.wav');
+
+  fetch('/pub/audio-files', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Upload successful:', data.filePath);
+      alert(`Saved at: ${data.filePath}`);
+    } else {
+      console.error('Upload failed.');
+    }
+  })
+  .catch(error => console.error('Error uploading:', error));
+}
     const recordButton = document.getElementById('record');
-    const loadClipsButton = document.getElementById('loadClips');
     const player = document.getElementById('player');
-    const clipList = document.getElementById('clipList');
 
     let audioContext, mediaRecorder, chunks = [], analyser, source;
 
@@ -117,15 +150,25 @@ function closeNav() {
         const url = URL.createObjectURL(wavBlob);
         player.src = url;
         saveToIndexedDB(wavBlob);
+        saveToServer(wavBlob);
       };
 
       mediaRecorder.start();
-      recordButton.textContent = "Recording... (3s)";
+      recordButton.textContent = "Recording... (5s)";
+      
+    function showText() {
+      document.getElementById('moveontext').style.display = 'block';
+    }
+    function showButton() {
+      document.getElementById('moveonbutton').style.display = 'block';
+    }
 
-      setTimeout(() => {
-        mediaRecorder.stop();
-        recordButton.textContent = "Start Recording";
-      }, 3000);
+    setTimeout(() => {
+      mediaRecorder.stop();
+      recordButton.textContent = "Start Recording";
+      showButton();
+      showText();
+    }, 5000);
     }
 
     function trimBuffer(buffer) {
@@ -190,50 +233,31 @@ function closeNav() {
     }
 
     function saveToIndexedDB(blob) {
-      const request = indexedDB.open("audioDB", 1);
-      request.onupgradeneeded = event => {
-        const db = event.target.result;
-        db.createObjectStore("clips", { autoIncrement: true });
-      };
-
-      request.onsuccess = event => {
-        const db = event.target.result;
-        const tx = db.transaction("clips", "readwrite");
-        const store = tx.objectStore("clips");
-        store.add(blob);
-        tx.oncomplete = () => db.close();
-      };
+  const request = indexedDB.open("audioDB", 1);
+  request.onupgradeneeded = event => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains("clips")) {
+      db.createObjectStore("clips", { autoIncrement: true });
     }
+  };
 
-    function loadClipsFromIndexedDB() {
-      const request = indexedDB.open("audioDB", 1);
-      request.onsuccess = event => {
-        const db = event.target.result;
-        const tx = db.transaction("clips", "readonly");
-        const store = tx.objectStore("clips");
+  request.onsuccess = event => {
+    const db = event.target.result;
+    const tx = db.transaction("clips", "readwrite");
+    const store = tx.objectStore("clips");
 
-        const getAllRequest = store.getAll();
-        getAllRequest.onsuccess = () => {
-          const clips = getAllRequest.result;
-          clipList.innerHTML = '';
+    // First, clear all previous clips
+    const clearRequest = store.clear();
+    clearRequest.onsuccess = () => {
+      // After clearing, add the new blob
+      store.add(blob);
+    };
 
-          clips.forEach((blob, index) => {
-            const li = document.createElement('li');
-            const audio = document.createElement('audio');
-            audio.controls = true;
-            audio.src = URL.createObjectURL(blob);
-            li.textContent = `Clip ${index + 1}: `;
-            li.appendChild(audio);
-            clipList.appendChild(li);
-          });
-
-          db.close();
-        };
-      };
-    }
+    tx.oncomplete = () => db.close();
+  };
+}
 
     recordButton.addEventListener('click', startRecording);
-    loadClipsButton.addEventListener('click', loadClipsFromIndexedDB);
   </script>
 </body>
 </html>
