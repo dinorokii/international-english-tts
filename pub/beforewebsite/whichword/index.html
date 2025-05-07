@@ -76,7 +76,9 @@ function closeNav() {
 }
 </script>
   <h1>What word would you like to record? (You can always come back to do another.)</h1>
-  <textarea id="textInput" rows="5" cols="50" placeholder="One word only please, connect certain phrases like «in between» with a hyphen."></textarea>
+  <form method="post" action="~/pub/server.js">
+    <textarea id="textInput" rows="5" cols="50" name="text_data" placeholder="One word at a time please, connect certain phrases like «in between» with a hyphen."></textarea>
+  </form>
   <br>
   <button id="record">Record!</button>
 
@@ -87,5 +89,4 @@ function closeNav() {
         window.location.href = "/beforewebsite/fun/intonation1" + '?word=' + theword;
     });
   </script>
-
   </body>
