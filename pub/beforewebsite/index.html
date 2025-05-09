@@ -81,9 +81,7 @@ function closeNav() {
 
   <script>
     let allowedWords = [];
-
-    // Load the words.txt file
-    fetch('words.txt')
+    fetch('/words.txt')
       .then(response => response.text())
       .then(data => {
         allowedWords = data.split('\n').map(word => word.trim().toLowerCase());

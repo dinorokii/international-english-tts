@@ -76,17 +76,25 @@ function closeNav() {
 }
 </script>
   <h1>What word would you like to record? (You can always come back to do another.)</h1>
-  <form method="post" action="~/pub/server.js">
+  <p id="suggestion" style="display: none;">(May I suggest ""?)</p>
+  <form method="POST" action="/beforewebsite/whichword">
     <textarea id="textInput" rows="5" cols="50" name="text_data" placeholder="One word at a time please, connect certain phrases like «in between» with a hyphen."></textarea>
+    <br>
+    <button id="record">Record!</button>
   </form>
-  <br>
-  <button id="record">Record!</button>
-
-  <script>
- document.getElementById('record').addEventListener('click', () => {
-        const theword = document.getElementById('textInput').value;
-        console.log("User typed:", theword);
-        window.location.href = "/beforewebsite/fun/intonation1" + '?word=' + theword;
-    });
-  </script>
+<script>
+   const params = new URLSearchParams(window.location.search);
+    const word = params.get('word');
+  
+    if (word) {
+      document.getElementById('suggestion').textContent = `(May I suggest "${word}"?)`;
+    }
+    function showText() {
+      document.getElementById('suggestion').style.display = 'block';
+    }
+    if (params.has('word')) {
+      const wordValue = params.get('word');
+      showText(wordValue);
+    }
+</script>
   </body>
