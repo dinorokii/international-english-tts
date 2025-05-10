@@ -101,13 +101,12 @@ function closeNav() {
     if (word) {
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
-  </script>
-  <script>
 function saveToServer(blob) {
   const formData = new FormData();
-  formData.append('audio', blob, `${word}-9.wav`);
+  formData.append('audio', blob, `${word}-1.wav`);
+  formData.append('word', word);
 
-  fetch('/audio-files', {
+  fetch('/beforewebsite/fun/intonation9', {
     method: 'POST',
     body: formData
   })
@@ -151,7 +150,7 @@ function saveToServer(blob) {
         const url = URL.createObjectURL(wavBlob);
         player.src = url;
         saveToIndexedDB(wavBlob);
-        saveToServer(wavBlob);
+        saveToServer(wavBlob, word);
       };
 
       mediaRecorder.start();

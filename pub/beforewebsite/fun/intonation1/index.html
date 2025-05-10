@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eirik Website Eirik</title>
-    <link rel="icon" type="image/png" href="imgs/icon.png" />
+    <link rel="icon" type="image/png" href="/imgs/icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Magra:wght@400;700&display=swap" rel="stylesheet" />
@@ -84,7 +83,7 @@ function closeNav() {
   <p id="wordchosen">Word Chosen:</p>
   <p>Please record like the following intonation:</p>
   <audio controls>
-    <source src="1.mp3" type="audio/mpeg">
+    <source src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
   </audio>
   <br>
   <br>
@@ -101,13 +100,12 @@ function closeNav() {
     if (word) {
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
-  </script>
-  <script>
 function saveToServer(blob) {
   const formData = new FormData();
   formData.append('audio', blob, `${word}-1.wav`);
+  formData.append('word', word);
 
-  fetch('/audio-files', {
+  fetch('/beforewebsite/fun/intonation1', {
     method: 'POST',
     body: formData
   })
@@ -151,7 +149,7 @@ function saveToServer(blob) {
         const url = URL.createObjectURL(wavBlob);
         player.src = url;
         saveToIndexedDB(wavBlob);
-        saveToServer(wavBlob);
+        saveToServer(wavBlob, word);
       };
 
       mediaRecorder.start();

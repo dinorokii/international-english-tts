@@ -101,13 +101,12 @@ function closeNav() {
     if (word) {
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
-  </script>
-  <script>
 function saveToServer(blob) {
   const formData = new FormData();
-  formData.append('audio', blob, `${word}-8.wav`);
+  formData.append('audio', blob, `${word}-1.wav`);
+  formData.append('word', word);
 
-  fetch('/audio-files', {
+  fetch('/beforewebsite/fun/intonation8', {
     method: 'POST',
     body: formData
   })

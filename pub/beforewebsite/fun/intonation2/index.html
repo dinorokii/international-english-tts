@@ -97,17 +97,19 @@ function closeNav() {
   <script>
     const params = new URLSearchParams(window.location.search);
     const word = params.get('word');
+    /*
+    const num = Number(params.get('num'));
+    */
   
     if (word) {
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
-  </script>
-  <script>
 function saveToServer(blob) {
   const formData = new FormData();
-  formData.append('audio', blob, `${word}-2.wav`);
+  formData.append('audio', blob, `${word}-1.wav`);
+  formData.append('word', word);
 
-  fetch('/audio-files', {
+  fetch('/beforewebsite/fun/intonation2', {
     method: 'POST',
     body: formData
   })
