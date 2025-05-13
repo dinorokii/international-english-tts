@@ -78,6 +78,9 @@ function closeNav() {
   <textarea id="textInput" rows="5" cols="50" placeholder="Type here..."></textarea>
   <br>
   <button id="checkbutton">Send</button>
+  <audio id="theaudio">
+  <source id="thisone" src="/audio-files/" type="audio/wav">
+  </audio>
 
   <script>
     let allowedWords = [];
@@ -90,16 +93,32 @@ function closeNav() {
     const textInput = document.getElementById('textInput');
     const checkButton = document.getElementById('checkbutton')
 
-    checkButton.addEventListener('click', () => {
+    checkButton.addEventListener('click', async (e) => {
       const inputText = textInput.value;
       const words = inputText.trim().split(/\s+/);
 
+      const playWordAudio = async (word) => {
+      word = word.replace(/[^a-zA-Z0-9]/g, '');
+      if (word && !allowedWords.includes(word.toLowerCase())) {
+        // Redirect if a word is not allowed
+        window.location.href = "/beforewebsite/add" + '?word=' + word;
+        return;
+      }
+      if (word) {
+        // Update the audio source and play the audio
+        const audioSource = document.getElementById('thisone');
+        audioSource.setAttribute('src', `/audio-files/${word}-1.wav`);
+        const audioElement = document.getElementById('theaudio');
+        audioElement.load(); // Reload the audio source
+        await new Promise((resolve, reject) => {
+        audioElement.onended = resolve;
+        audioElement.play().catch(reject);
+        });
+      }
+      };
+
       for (let word of words) {
-        if (word && !allowedWords.includes(word.toLowerCase())) {
-          // Redirect if a word is not allowed
-          window.location.href = "/beforewebsite/add" + '?word=' + word;;
-          return;
-        }
+      await playWordAudio(word);
       }
     });
   </script>
