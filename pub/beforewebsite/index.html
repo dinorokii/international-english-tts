@@ -81,8 +81,9 @@ function closeNav() {
   <audio id="theaudio">
   <source id="thisone" src="/audio-files/" type="audio/wav">
   </audio>
+  <br>
 
-  <script>
+<script type="module">
     let allowedWords = [];
     fetch('/words.txt')
       .then(response => response.text())
@@ -90,36 +91,119 @@ function closeNav() {
         allowedWords = data.split('\n').map(word => word.trim().toLowerCase());
       });
 
+  function createDropdowns(num) {
+  const container = document.body;
+
+  for (let i = 0; i < num; i++) {
+  const select = document.createElement('select');
+  select.name = `dropdown-${i + 1}`; 
+  select.id = `dropdown-${i + 1}`; 
+
+  const option1 = document.createElement('option');
+  option1.value = 'value1';
+  option1.text = '1';
+  select.add(option1);
+
+  const option2 = document.createElement('option');
+  option2.value = 'value2';
+  option2.text = '2';
+  select.add(option2);
+
+  const option3 = document.createElement('option');
+  option3.value = 'value3';
+  option3.text = '3';
+  select.add(option3);
+
+  const option4 = document.createElement('option');
+  option4.value = 'value4';
+  option4.text = '4';
+  select.add(option4);
+
+  const option5 = document.createElement('option');
+  option5.value = 'value5';
+  option5.text = '5';
+  select.add(option5);
+  
+  const option6 = document.createElement('option');
+  option6.value = 'value6';
+  option6.text = '6';
+  select.add(option6);
+
+  const option7 = document.createElement('option');
+  option7.value = 'value7';
+  option7.text = '7';
+  select.add(option7);
+
+  const option8 = document.createElement('option');
+  option8.value = 'value8';
+  option8.text = '8';
+  select.add(option8);
+
+  const option9 = document.createElement('option');
+  option9.value = 'value9';
+  option9.text = '9';
+  select.add(option9);
+
+  const option10 = document.createElement('option');
+  option10.value = 'value10';
+  option10.text = '10';
+  select.add(option10);
+
+  container.appendChild(select);
+  }
+}
+
     const textInput = document.getElementById('textInput');
-    const checkButton = document.getElementById('checkbutton')
+    const checkButton = document.getElementById('checkbutton');
+
+    const playWordAudio = async (word, i) => {
+        word = word.replace(/[^a-zA-Z0-9]/g, '');
+        if (word && !allowedWords.includes(word.toLowerCase())) {
+            // Redirect if a word is not allowed
+            window.location.href = "/beforewebsite/add" + '?word=' + word;
+            return;
+        }
+        if (word) {
+            // Update the audio source and play the audio
+            const audioSource = document.getElementById('thisone');
+            audioSource.setAttribute('src', `/audio-files/${word}-${i}.wav`);
+            const audioElement = document.getElementById('theaudio');
+            audioElement.load(); // Reload the audio source
+            await new Promise((resolve, reject) => {
+                audioElement.onended = resolve;
+                audioElement.play().catch(reject);
+            });
+        }
+    };
 
     checkButton.addEventListener('click', async (e) => {
-      const inputText = textInput.value;
-      const words = inputText.trim().split(/\s+/);
+        const inputText = textInput.value;
+        const words = inputText.trim().split(/\s+/);
+        const existingDropdowns = document.querySelectorAll('select[name^="dropdown-"]');
 
-      const playWordAudio = async (word) => {
-      word = word.replace(/[^a-zA-Z0-9]/g, '');
-      if (word && !allowedWords.includes(word.toLowerCase())) {
-        // Redirect if a word is not allowed
-        window.location.href = "/beforewebsite/add" + '?word=' + word;
-        return;
-      }
-      if (word) {
-        // Update the audio source and play the audio
-        const audioSource = document.getElementById('thisone');
-        audioSource.setAttribute('src', `/audio-files/${word}-1.wav`);
-        const audioElement = document.getElementById('theaudio');
-        audioElement.load(); // Reload the audio source
-        await new Promise((resolve, reject) => {
-        audioElement.onended = resolve;
-        audioElement.play().catch(reject);
-        });
-      }
-      };
+        // Collect selected dropdown values
+        const selectedOptions = [];
+        for (let i = 0; i < words.length; i++) {
+            const intonationSelect = document.getElementById(`dropdown-${i + 1}`);
+            if (intonationSelect) {
+                const selectedText = intonationSelect.options[intonationSelect.selectedIndex].text;
+                selectedOptions.push({
+                    word: words[i],
+                    intonation: selectedText
+                });
+            }
+        }
+        console.log('Selected Options:', selectedOptions); // Log or send this data
 
-      for (let word of words) {
-      await playWordAudio(word);
-      }
+        existingDropdowns.forEach(dropdown => dropdown.remove());
+
+        createDropdowns(words.length);
+
+
+        for (const opt of selectedOptions) {
+            await playWordAudio(opt.word, opt.intonation)
+        }
+
     });
   </script>
 
