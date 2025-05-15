@@ -183,6 +183,7 @@ function closeNav() {
     };
 
     checkButton.addEventListener('click', async (e) => {
+        document.getElementById('lastinto').textContent = `Last intonations sent in:`;
         const inputText = textInput.value;
         const words = inputText.trim().split(/\s+/);
         const existingDropdowns = document.querySelectorAll('select[name^="dropdown-"]');
