@@ -82,6 +82,8 @@ function closeNav() {
   <source id="thisone" src="/audio-files/" type="audio/wav">
   </audio>
   <br>
+  <p id="lastinto">Last intonations sent in: </p>
+  <br>
 
 <script type="module">
     let allowedWords = [];
@@ -157,13 +159,17 @@ function closeNav() {
     const checkButton = document.getElementById('checkbutton');
 
     const playWordAudio = async (word, i) => {
-        word = word.replace(/[^a-zA-Z0-9]/g, '');
+        word = word.replace(/[^a-zA-Z0-9-]/g, '');
         if (word && !allowedWords.includes(word.toLowerCase())) {
             // Redirect if a word is not allowed
             window.location.href = "/beforewebsite/add" + '?word=' + word;
             return;
         }
         if (word) {
+          const lastIntoElem = document.getElementById('lastinto');
+          let currentText = lastIntoElem.textContent.replace(/^Last intonations sent in:\s*/, '');
+          currentText += `${i}, `;
+          lastIntoElem.textContent = `Last intonations sent in: ${currentText}`;
             // Update the audio source and play the audio
             const audioSource = document.getElementById('thisone');
             audioSource.setAttribute('src', `/audio-files/${word}-${i}.wav`);
@@ -188,17 +194,15 @@ function closeNav() {
             if (intonationSelect) {
                 const selectedText = intonationSelect.options[intonationSelect.selectedIndex].text;
                 selectedOptions.push({
-                    word: words[i],
+                    word: words[i].toLowerCase(),
                     intonation: selectedText
                 });
             }
         }
         console.log('Selected Options:', selectedOptions); // Log or send this data
-
         existingDropdowns.forEach(dropdown => dropdown.remove());
 
         createDropdowns(words.length);
-
 
         for (const opt of selectedOptions) {
             await playWordAudio(opt.word, opt.intonation)
