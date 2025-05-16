@@ -83,7 +83,7 @@ function closeNav() {
   <p id="wordchosen">Word Chosen:</p>
   <p>Please record like the following intonation:</p>
   <audio controls>
-    <source src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+    <source id="example" src= "/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
   </audio>
   <br>
   <br>
@@ -101,12 +101,16 @@ function closeNav() {
     if (word) {
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
+
+ const audioSource = document.getElementById('example');
+ audioSource.setAttribute('src', `/beforewebsite/fun/intonation1/${num}.mp3`);
+
 function saveToServer(blob) {
   const formData = new FormData();
   formData.append('audio', blob, `${word}-${num}.wav`);
   formData.append('word', word);
 
-  fetch('/beforewebsite/fun/intonation1', {
+  fetch(`/beforewebsite/fun/intonation1?word=${word}&num=${num}`, {
     method: 'POST',
     body: formData
   })
@@ -116,7 +120,7 @@ function saveToServer(blob) {
       console.log('Upload successful:', data.filePath);
       alert(`Saved at: ${data.filePath}`);
     } else {
-      console.error('Upload failed.');
+      console.error('Did not save properly.');
     }
   })
   .catch(error => console.error('Error uploading:', error));
@@ -167,7 +171,13 @@ function saveToServer(blob) {
       mediaRecorder.stop();
       recordButton.textContent = "Start Recording";
       showButton();
+      if (num < 10) {
       showText();
+      } else {
+      const moveonElem = document.getElementById('moveontext');
+      moveonElem.textContent.replace(/^Nice! Now to move on. (Unless you'd like to rerecord.)\s*/, `You're all done! Click "Home" to go back to the textbox.`);
+      showText();
+      }
     }, 5000);
     }
 
@@ -270,12 +280,16 @@ function saveToServer(blob) {
      };
 
     recordButton.addEventListener('click', startRecording);
-
-    document.getElementById("moveonbutton").onclick = function () {
-       let num = parseInt(params.get('num') || '1', 10);
-       num++
-        location.href = "/beforewebsite/fun/intonation1?word=" + `${word}` + "&num=" + `${num}`
-    };
+    if (num < 10) {
+      document.getElementById("moveonbutton").onclick = function () {
+        let nextNum = parseInt(params.get('num') || '1', 10) + 1;
+        location.href = "/beforewebsite/fun/intonation1?word=" + encodeURIComponent(word) + "&num=" + nextNum;
+      };
+    } else {
+      document.getElementById("moveonbutton").onclick = function () {
+        location.href = "/beforewebsite";
+      };
+    }
   </script>
   <script>
     setTimeout(() => {
