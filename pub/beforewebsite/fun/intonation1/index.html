@@ -93,12 +93,42 @@ function closeNav() {
   <button id="redo">Redo</button>
   <p id= "moveontext" style="display: none;">Nice! Now to move on. (Unless you'd like to rerecord.)</p>
   <button id= "moveonbutton" style="display: none; margin: 0 auto;">Next Intonation</button>
+  <audio id="carriages">
+  <source id="16carriages" src="/beforewebsite/fun/intonation1/16carriage.mp3" type="audio/wav">
+  </audio>
+<img src="/beforewebsite/fun/intonation1/ezgif.com-effects.gif" id="overlay">
+
+<style>
+    #overlay {
+  position: fixed;
+  display: none; 
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0); 
+  z-index: 3;
+  object-fit: cover;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+</style>
   <script>
+
+ function on() {
+  document.getElementById("overlay").style.display = "block";
+ }
+
+ function off() {
+  document.getElementById("overlay").style.display = "none";
+ }
+
     const params = new URLSearchParams(window.location.search);
     const word = params.get('word');
     const num = params.get('num');
   
     if (word) {
+      off();
       document.getElementById('wordchosen').textContent = `Word Chosen: ${word}`;
     }
 
@@ -171,15 +201,29 @@ function saveToServer(blob) {
       mediaRecorder.stop();
       recordButton.textContent = "Start Recording";
       showButton();
-      if (num < 10) {
-      showText();
+      if (parseInt(num, 10) < 10) {
+        showText();
       } else {
-      const moveonElem = document.getElementById('moveontext');
-      moveonElem.textContent.replace(/^Nice! Now to move on. (Unless you'd like to rerecord.)\s*/, `You're all done! Click "Home" to go back to the textbox.`);
-      showText();
+        const moveonElem = document.getElementById('moveontext');
+        const homeElem = document.getElementById('moveonbutton');
+        moveonElem.textContent = moveonElem.textContent.replace(/^Nice! Now to move on. \(Unless you'd like to rerecord\.\)\s*/, `You're all done! Click "Home" to go back to the textbox.`);
+        homeElem.textContent = homeElem.textContent.replace(/^Next Intonation\s*/, `Home`);
+        showText();
       }
     }, 5000);
+    
+    if (!parseInt(num, 10) < 10) {
+    setTimeout(() => {
+    const audioElement = document.getElementById('carriages');
+    on();
+    audioElement.load();
+    audioElement.play();
+    }, 3990);
+    setTimeout(() => {
+      off();
+    }, 6902);
     }
+  }
 
     function trimBuffer(buffer) {
       const raw = buffer.getChannelData(0);
