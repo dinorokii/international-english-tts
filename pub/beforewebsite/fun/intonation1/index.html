@@ -212,7 +212,7 @@ function saveToServer(blob) {
       }
     }, 5000);
     
-    if (!parseInt(num, 10) < 10) {
+    if (parseInt(num, 10) == 10) {
     setTimeout(() => {
     const audioElement = document.getElementById('carriages');
     on();
