@@ -126,6 +126,7 @@ function closeNav() {
     const params = new URLSearchParams(window.location.search);
     const word = params.get('word');
     const num = params.get('num');
+    const vari = params.get('vari');
   
     if (word) {
       off();
@@ -140,7 +141,7 @@ function saveToServer(blob) {
   formData.append('audio', blob, `${word}-${num}.wav`);
   formData.append('word', word);
 
-  fetch(`/beforewebsite/fun/intonation1?word=${word}&num=${num}`, {
+  fetch(`/beforewebsite/fun/intonation1?word=${word}&num=${num}&vari=${vari}`, {
     method: 'POST',
     body: formData
   })
