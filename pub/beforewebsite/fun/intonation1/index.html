@@ -325,6 +325,7 @@ function saveToServer(blob) {
      };
 
     recordButton.addEventListener('click', startRecording);
+    if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
     if (num < 10) {
       document.getElementById("moveonbutton").onclick = function () {
         let nextNum = parseInt(params.get('num') || '1', 10) + 1;
@@ -335,6 +336,18 @@ function saveToServer(blob) {
         location.href = "/beforewebsite";
       };
     }
+  } else {
+        if (num < 10) {
+      document.getElementById("moveonbutton").onclick = function () {
+        let nextNum = parseInt(params.get('num') || '1', 10) + 1;
+        location.href = "/beforewebsite/fun/intonation1?word=" + encodeURIComponent(word) + "&num=" + nextNum + "&vari=" + vari;
+      };
+    } else {
+      document.getElementById("moveonbutton").onclick = function () {
+        location.href = "/beforewebsite";
+      };
+    }
+  }
   </script>
   <script>
     setTimeout(() => {

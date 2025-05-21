@@ -86,11 +86,11 @@ function closeNav() {
   <br>
 
 <script type="module">
-    let allowedWords = [];
-    fetch('/words.txt')
+          let heteronyms = [];
+    fetch('/heteronyms.txt')
       .then(response => response.text())
       .then(data => {
-        allowedWords = data.split('\n').map(word => word.trim().toLowerCase());
+        heteronyms = data.split('\n').map(word => word.trim().toLowerCase());
       });
 
   function createDropdowns(num) {
@@ -153,17 +153,52 @@ function closeNav() {
 
   container.appendChild(select);
   }
+  
 }
+
+function createHeteronymDropdowns(words) {
+  const container = document.body;
+
+  const linebreak = document.createElement("br");
+  linebreak.classList.add("heteronym-br");
+  container.appendChild(linebreak); // linebreak to separate the heteronym dropdowns
+
+  for (let i = 0; i < words.length; i++) {
+  const word = words[i];
+// how do you check if a word is a heteronym in your code?
+if(word && !heteronyms.includes(word.toLowerCase())) continue;
+
+  const select = document.createElement('select');
+  select.name = `heteronym-dropdown-${i + 1}`; 
+  select.id = `heteronym-dropdown-${i + 1}`; 
+
+
+  const option1 = document.createElement('option');
+  option1.value = '1';
+  option1.text = "Pronunciation 1 for " + word;
+  select.add(option1);
+
+  const option2 = document.createElement('option');
+  option2.value = '2';
+  option2.text = "Pronunciation 2 for " + word;
+  select.add(option2);
+
+  container.appendChild(select);
+  }
+}
+
 
     const textInput = document.getElementById('textInput');
     const checkButton = document.getElementById('checkbutton');
 
-    const playWordAudio = async (word, i) => {
-        word = word.replace(/[^a-zA-Z0-9-]/g, '');
-        if (word && !allowedWords.includes(word.toLowerCase())) {
-            // Redirect if a word is not allowed
-            window.location.href = "/beforewebsite/add" + '?word=' + word;
-            return;
+    const playWordAudio = async (word, i, heteronym) => {
+        word = word.replace(/[^a-zA-Z0-9-]/g, ''); // oh ok
+        const res = await fetch("/beforewebsite/api/check-word", {
+          method: "POST",
+          body: word
+        })
+        if(res.redirected) {
+          window.location.href = res.url; // this is a redirect
         }
         if (word) {
           const lastIntoElem = document.getElementById('lastinto');
@@ -172,13 +207,23 @@ function closeNav() {
           lastIntoElem.textContent = `Last intonations sent in: ${currentText}`;
             // Update the audio source and play the audio
             const audioSource = document.getElementById('thisone');
-            audioSource.setAttribute('src', `/audio-files/${word}-${i}.wav`);
-            const audioElement = document.getElementById('theaudio');
-            audioElement.load(); // Reload the audio source
-            await new Promise((resolve, reject) => {
-                audioElement.onended = resolve;
-                audioElement.play().catch(reject);
-            });
+            if (word && !heteronyms.includes(word.toLowerCase())) {
+                audioSource.setAttribute('src', `/audio-files/${word}-${i}.wav`);
+                const audioElement = document.getElementById('theaudio');
+                audioElement.load(); // Reload the audio source
+                await new Promise((resolve, reject) => {
+                    audioElement.onended = resolve;
+                    audioElement.play().catch(reject);
+                });
+            } else {
+                audioSource.setAttribute('src', `/audio-files/${word}-${i}-${heteronym}.wav`);
+                const audioElement = document.getElementById('theaudio');
+                audioElement.load(); // Reload the audio source
+                await new Promise((resolve, reject) => {
+                    audioElement.onended = resolve;
+                    audioElement.play().catch(reject);
+                });
+            }
         }
     };
 
@@ -186,29 +231,32 @@ function closeNav() {
         document.getElementById('lastinto').textContent = `Last intonations sent in:`;
         const inputText = textInput.value;
         const words = inputText.trim().split(/\s+/);
-        const existingDropdowns = document.querySelectorAll('select[name^="dropdown-"]');
+        const existingDropdowns = [...document.querySelectorAll('select[name^="dropdown-"]'), ...document.querySelectorAll('select[name^="heteronym-dropdown-"]')];
 
         // Collect selected dropdown values
         const selectedOptions = [];
         for (let i = 0; i < words.length; i++) {
             const intonationSelect = document.getElementById(`dropdown-${i + 1}`);
+            const heteronymSelect = document.getElementById(`heteronym-dropdown-${i + 1}`);
             if (intonationSelect) {
                 const selectedText = intonationSelect.options[intonationSelect.selectedIndex].text;
                 selectedOptions.push({
                     word: words[i].toLowerCase(),
-                    intonation: selectedText
+                    intonation: selectedText,
+                    heteronym: heteronymSelect?.options?.[heteronymSelect.selectedIndex].value
                 });
             }
         }
         console.log('Selected Options:', selectedOptions); // Log or send this data
         existingDropdowns.forEach(dropdown => dropdown.remove());
+        document.querySelectorAll("br.heteronym-br").forEach(element => element.remove());
 
         createDropdowns(words.length);
+        createHeteronymDropdowns(words);
 
         for (const opt of selectedOptions) {
-            await playWordAudio(opt.word, opt.intonation)
+            await playWordAudio(opt.word, opt.intonation, opt.heteronym)
         }
-
     });
   </script>
 
