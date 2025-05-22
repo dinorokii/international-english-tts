@@ -93,8 +93,9 @@ function closeNav() {
         heteronyms = data.split('\n').map(word => word.trim().toLowerCase());
       });
 
-  function createDropdowns(num) {
-  const container = document.body;
+function createDropdowns(num) {
+  const container = document.getElementById('dropdown-container');
+  container.innerHTML = "";
 
   for (let i = 0; i < num; i++) {
   const select = document.createElement('select');
@@ -157,8 +158,7 @@ function closeNav() {
 }
 
 function createHeteronymDropdowns(words) {
-  const container = document.body;
-
+  const container = document.getElementById('dropdown-container');
   const linebreak = document.createElement("br");
   linebreak.classList.add("heteronym-br");
   container.appendChild(linebreak); // linebreak to separate the heteronym dropdowns
@@ -259,6 +259,87 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
         }
     });
   </script>
-
+  <div id="dropdown-container"></div>
+<br>
+<br>
+<div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+  <table>
+    <tr>
+      <th>Intonation</th>
+      <th>Sounds Akin To</th>
+      <th>Audio Example</th>
+    </tr>
+    <tr>
+      <td>Intonation 1</td>
+      <td>Hesitancy or thinking</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 2</td>
+      <td>Trailing thought or melancholy</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/2.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 3</td>
+      <td>Question, "?!"</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/3.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 4</td>
+      <td>Angry sounding</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/4.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 5</td>
+      <td>Regular sentence intonation or melancholy</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/5.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 6</td>
+      <td>Questioning</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/6.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 7</td>
+      <td>Ending word</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/7.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 8</td>
+      <td>Angry sounding, mid-sentence</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/8.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 9</td>
+      <td>Regular sentence intonation</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/9.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+    <tr>
+      <td>Intonation 10</td>
+      <td>Questioning-adjecent</td>
+      <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/10.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>
