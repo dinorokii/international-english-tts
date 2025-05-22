@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eirik Website Eirik</title>
+  <link rel="icon" type="image/png" href="/imgs/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Magra:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Side navigation -->
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a class="active" href="/">Home</a>
+  <a href="/questions">Questions</a>
+  <a href="/beforewebsite">IETTS</a>
+  <a href="/beforewebsite/whichword">Record</a>
+</div>
+
+<!-- Open buttons (outside the sidenav) -->
+<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+
+<!-- JavaScript -->
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+</script>
+
+<h1 id="lastword">Last word:</h1>
+<h1 id="numberofwords">Number of words:</h1>
+<h1 id="perheteronymscompleted">Percentage of heteronyms finished:</h1>
+
+<script type="module">
+    const res = await fetch("/beforewebsite/stats/api/whatever", {
+        method: "POST"
+    }); // because you didn't console.log anything
+    if(!res.ok) {
+      alert("Failed to get stats!");
+      window.location.reload();
+    }
+    const {lastWord, percentHeteronymsFinished, wordsCount} = await res.json();
+    // List of everything on the stats page that we want:
+    // - last added word
+    // - percent of heteronyms finished
+    // - number of words
+    // lets just add this for now and see what else we need
+    // so what do you think we should do? should we have one request for every single one of those
+    // or should we put them toogether nt one request 
+    // so to put it in one request we should use json
+    console.log(lastWord, percentHeteronymsFinished, wordsCount);
+    const lastIntoElem = document.getElementById('lastword');
+    let currentText = lastIntoElem.textContent.replace(/^Last word:\s*/, '');
+    currentText += `${lastWord} `;
+    lastIntoElem.textContent = `Last word: ${currentText}`;
+    
+    const numberOfWordsElem = document.getElementById('numberofwords');
+    numberOfWordsElem.textContent = `Number of words: ${wordsCount}`;
+
+    const percentHeteronymsCompletedElem = document.getElementById('perheteronymscompleted');
+    percentHeteronymsCompletedElem.textContent = `Percentage of heteronyms completed: ${percentHeteronymsFinished}`;
+</script>

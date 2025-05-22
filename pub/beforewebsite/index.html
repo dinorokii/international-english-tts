@@ -165,7 +165,7 @@ function createHeteronymDropdowns(words) {
 
   for (let i = 0; i < words.length; i++) {
   const word = words[i];
-// how do you check if a word is a heteronym in your code?
+
 if(word && !heteronyms.includes(word.toLowerCase())) continue;
 
   const select = document.createElement('select');
