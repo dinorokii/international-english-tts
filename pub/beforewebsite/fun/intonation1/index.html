@@ -136,25 +136,18 @@ function closeNav() {
  const audioSource = document.getElementById('example');
  audioSource.setAttribute('src', `/beforewebsite/fun/intonation1/${num}.mp3`);
 
-function saveToServer(blob) {
+async function saveToServer(blob) {
   const formData = new FormData();
   formData.append('audio', blob, `${word}-${num}.wav`);
   formData.append('word', word);
 
-  fetch(`/beforewebsite/fun/intonation1?word=${word}&num=${num}&vari=${vari}`, {
+  const res = await fetch(`/beforewebsite/fun/intonation1?word=${word}&num=${num}&vari=${vari}`, {
     method: 'POST',
     body: formData
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log('Upload successful:', data.filePath);
-      alert(`Saved at: ${data.filePath}`);
-    } else {
-      console.error('Did not save properly.');
-    }
-  })
-  .catch(error => console.error('Error uploading:', error));
+  if(!res.ok) {
+    alert(await res.text());
+  }
 }
     const recordButton = document.getElementById('record');
     const player = document.getElementById('player');
