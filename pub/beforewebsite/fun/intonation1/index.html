@@ -53,6 +53,25 @@
       .sidenav {padding-top: 15px;}
       .sidenav a {font-size: 18px;}
     }
+
+  #record {
+  border-color: lightgrey;
+  border-radius: 12px;
+  border-style: solid;
+  font-size: 16px;
+  padding: 10px;
+  margin: 4px 2px; 
+}
+
+  #moveonbutton {
+  border-color: lightgrey;
+  border-radius: 12px;
+  border-style: solid;
+  font-size: 16px;
+  padding: 10px;
+  margin: 4px 2px; 
+}
+
   </style>
 </head>
 <body>
@@ -82,15 +101,17 @@ function closeNav() {
   <h1>Recordin' time!</h1>
   <p id="wordchosen">Word Chosen:</p>
   <p>Please record like the following intonation:</p>
-  <audio controls>
+  <audio id="exampleplay" controls>
     <source id="example" src= "/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
   </audio>
   <br>
   <br>
   <audio id="player" controls></audio>
   <br>
+  <br>
   <button id="record">Start Recording</button>
-  <button id="redo">Redo</button>
+  <br>
+  <br>
   <p id= "moveontext" style="display: none;">Nice! Now to move on. (Unless you'd like to rerecord.)</p>
   <button id= "moveonbutton" style="display: none; margin: 0 auto;">Next Intonation</button>
   <audio id="carriages">
@@ -298,24 +319,6 @@ async function saveToServer(blob) {
        };
      }
 
-     document.getElementById("redo").onclick = function () {
-       const request = indexedDB.open("audioDB1", 1);
-       request.onsuccess = event => {
-         const db = event.target.result;
-         const tx = db.transaction("clips", "readwrite");
-         const store = tx.objectStore("clips");
-         const cursorRequest = store.openCursor(null, 'prev'); 
-         
-         cursorRequest.onsuccess = event => {
-           const cursor = event.target.result;
-           if (cursor) {
-             cursor.delete(); 
-           }
-         };
-
-         tx.oncomplete = () => db.close();
-       };
-     };
 
     recordButton.addEventListener('click', startRecording);
     if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {

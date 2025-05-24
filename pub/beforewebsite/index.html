@@ -48,6 +48,36 @@
       .sidenav {padding-top: 15px;}
       .sidenav a {font-size: 18px;}
     }
+
+    #checkbutton {
+  border-color: lightgrey;
+  border-radius: 12px;
+  border-style: solid;
+  font-size: 16px;
+  padding: 10px;
+  margin: 4px 2px; }
+
+#table {
+  border-radius: 20px;
+  border-color: grey;
+  border-style: solid;
+  background: rgb(235, 235, 235);
+  padding: 20px;
+}
+
+.dropdown {
+  border-radius: 25px;
+  border-color: lightgrey;
+  border-style: solid;
+  padding: 5px;
+}
+
+#textInput {
+  border-radius: 25px;
+  border-color: lightgrey;
+  border-style: solid;
+  padding: 20px;
+}
   </style>
 </head>
 <body>
@@ -75,14 +105,18 @@ function closeNav() {
 }
 </script>
   <h1>Type in the box below</h1>
+  <br>
   <textarea id="textInput" rows="5" cols="50" placeholder="Type here..."></textarea>
+  <br>
   <br>
   <button id="checkbutton">Send</button>
   <audio id="theaudio">
   <source id="thisone" src="/audio-files/" type="audio/wav">
   </audio>
   <br>
+  <br>
   <p id="lastinto">Last intonations sent in: </p>
+  <br>
   <br>
 
 <script type="module">
@@ -100,7 +134,8 @@ function createDropdowns(num) {
   for (let i = 0; i < num; i++) {
   const select = document.createElement('select');
   select.name = `dropdown-${i + 1}`; 
-  select.id = `dropdown-${i + 1}`; 
+  select.id = `dropdown-${i + 1}`;
+  select.className = `dropdown dropdown-${i + 1}`;
 
   const option1 = document.createElement('option');
   option1.value = 'value1';
@@ -262,8 +297,9 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
   <div id="dropdown-container"></div>
 <br>
 <br>
+<br>
 <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-  <table>
+  <table id="table">
     <tr>
       <th>Intonation</th>
       <th>Sounds Akin To</th>
@@ -341,5 +377,7 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
     </tr>
   </table>
 </div>
+<br>
+<br>
 </body>
 </html>

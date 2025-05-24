@@ -4,8 +4,6 @@ body {
     font-family: 'Magra', sans-serif;
     background-color: azure;
     color: #fb3e3e;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #781818;
     margin: 0;
     padding: 0;
   }
