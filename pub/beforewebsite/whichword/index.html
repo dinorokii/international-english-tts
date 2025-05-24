@@ -64,6 +64,13 @@
   border-style: solid;
   padding: 20px;
 }
+
+#embed {
+  border-radius: 25px;
+  border-color: lightgrey;
+  border-style: solid;
+  padding: 20px;
+}
   </style>
 </head>
 <body>
@@ -99,6 +106,9 @@ function closeNav() {
     <br>
     <button id="record">Record!</button>
   </form>
+  <br>
+  <h3>Words currently up for grabs:</h3>
+  <embed id="embed" src="/beforewebsite/grabs.txt" width="500" height="300" />
 <script>
    const params = new URLSearchParams(window.location.search);
     const word = params.get('word');

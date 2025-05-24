@@ -80,6 +80,10 @@ function closeNav() {
 <br>
 <button id="YesButton">Yes</button>
 <button id="NoButton">No</button>
+<form id="grabsForm" method="POST" action="/beforewebsite/add">
+  <input type="hidden" name="word" id="hiddenWordInput" />
+  <button id="GrabsButton">No, but put it up for grabs</button>
+</form>
 
 <script type="text/javascript">
     document.getElementById("YesButton").onclick = function () {
@@ -94,6 +98,7 @@ function closeNav() {
   
     if (word) {
       document.getElementById('notword').textContent = `${word} is currently not a word in the website.`;
+      document.getElementById('hiddenWordInput').value = word;
     }
 </script>
 </body>

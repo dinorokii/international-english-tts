@@ -52,7 +52,7 @@ app.post("/beforewebsite/whichword", async (c) => {
   const wordsTxtList = (await readFile(join(__dirname, 'words.txt'), 'utf-8')).trim().split("\n");
   if(wordsTxtList.includes(textData.trim())) {
     c.status(400);
-    return c.text("This word has already been added!")
+    return c.text("Sorgy this word already exists")
   }
 
 
@@ -182,6 +182,7 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
   const num = Number(c.req.query('num'));
   const numMinusOne = num - 1;
   let vari = c.req.query('vari');
+  const fs = require('fs');
   
   const { audio, word } = await c.req.parseBody();
 
@@ -213,7 +214,7 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
   const wordsTxtList = (await readFile(join(__dirname, 'words.txt'), 'utf-8')).trim().split("\n");
   if(wordsTxtList.includes(word.trim())) {
     c.status(400);
-    return c.text("This word has already been added!")
+    return c.text("Sorgy this word already exists")
   }
 
   if (num === 10) {
@@ -233,6 +234,14 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
     }
   }
 }
+if (num === 10) {
+  let data = fs.readFileSync('beforewebsite/grabs.txt', 'utf-8');
+  let yeah = `${word}`;
+   const grabwords = (await readFile(join(__dirname, 'beforewebsite/grabs.txt'), 'utf-8')).trim().split("\n");
+  if(grabwords.includes(word.trim())) {
+   let newValue = data.replace(new RegEx(yeah), '');
+   await writeFile ('beforewebsite/grabs.txt', newValue, 'utf-8');
+}
 
   if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
     await writeFile(`audio-files/${word}-${num}.wav`, Buffer.from(await audio.arrayBuffer()));
@@ -241,7 +250,7 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
     await writeFile(`audio-files/${word}-${num}-${vari}.wav`, Buffer.from(await audio.arrayBuffer()));
     return c.json({ message: "The file was saved" });
   }
-  
+}
 });
 
 app.post("/beforewebsite/stats/api/whatever", async (c) => {
@@ -276,6 +285,18 @@ app.post("/beforewebsite/stats/api/whatever", async (c) => {
     c.status(500);
     return c.text("Error reading file");
   }
+});
+
+app.post("/beforewebsite/add", async (c) => {
+  const body = await c.req.parseBody();
+  let word = body.word;
+  try {
+      await appendFile('beforewebsite/grabs.txt', word + '\n');
+      return c.redirect("/beforewebsite")
+    } catch {
+      c.status(500);
+      return c.text("Error saving file");
+    }
 });
 
 import { serveStatic } from '@hono/node-server/serve-static';
