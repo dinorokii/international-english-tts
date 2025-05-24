@@ -150,107 +150,83 @@ function closeNav() {
   }
 });
 
-app.use("/beforewebsite/fun/intonation1", async (c, next) => {
-  const num = Number(c.req.query('num'));
-  const numMinusOne = num - 1;
-  let vari = c.req.query('vari');
-  let word = c.req.query('word');
-
-  if(num < 1 || num > 10) return c.text("no");
-  
-  if (num > 1) {
-    let filePath;
-
-    if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-      filePath = `audio-files/${word}-${numMinusOne}.wav`;
-    } else {
-      filePath = `audio-files/${word}-${numMinusOne}-${vari}.wav`;
-    }
-
-    try {
-      await fs.access(filePath); 
-    } catch (err) {
-      c.status(400);
-      return c.text("You must do all pronunciations.");
-    }
-  }
-
-  await next();
-})
-
 app.post(`/beforewebsite/fun/intonation1`, async (c) => {
-  const num = Number(c.req.query('num'));
-  const numMinusOne = num - 1;
-  let vari = c.req.query('vari');
-  const fs = require('fs');
-  
-  const { audio, word } = await c.req.parseBody();
+    const num = Number(c.req.query('num'));
+    const numMinusOne = num - 1;
+    let vari = c.req.query('vari');
 
-  if (!(audio instanceof File)) throw Error("Audio is not a file!");
-  if (typeof word !== "string") throw Error("Word is not a valid string!");
+    const {
+        audio,
+        word
+    } = await c.req.parseBody();
 
-  if(num < 1 || num > 10) throw Error("Number is out of bounds");
+    if (!(audio instanceof File)) throw Error("Audio is not a file!");
+    if (typeof word !== "string") throw Error("Word is not a valid string!");
 
-  if (num > 1) {
-    let filePath;
+    if (num < 1 || num > 10) throw Error("no");
 
-    
+    if (num > 1) {
+        let filePath;
+
+
+        if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
+            filePath = `audio-files/${word}-${numMinusOne}.wav`;
+        } else {
+            filePath = `audio-files/${word}-${numMinusOne}-${vari}.wav`;
+        }
+
+        try {
+            await fs.access(filePath);
+            console.log("Good they have done the word before");
+        } catch (err) {
+            console.log("OH GOD");
+            c.status(400);
+            return c.text("You must do all pronunciations.");
+        }
+    }
+
+    const wordsTxtList = (await readFile(join(__dirname, 'words.txt'), 'utf-8')).trim().split("\n");
+    if (wordsTxtList.includes(word.trim())) {
+        c.status(400);
+        return c.text("Sorgy this word already exists")
+    }
+
+    if (num === 10) {
+        if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
+            try {
+                await appendFile('words.txt', word + '\n');
+            } catch {
+                c.status(500);
+                return c.text("Error saving file");
+            }
+        } else {
+            try {
+                await appendFile('words.txt', word + "-" + `${vari}` + '\n');
+            } catch {
+                c.status(500);
+                return c.text("Error saving file");
+            }
+        }
+
+        let data = fs.readFileSync('beforewebsite/grabs.txt', 'utf-8');
+        let yeah = `${word}`;
+        const grabwords = (await readFile(join(__dirname, 'beforewebsite/grabs.txt'), 'utf-8')).trim().split("\n");
+        if (grabwords.includes(word.trim())) {
+            let newValue = data.replace(new RegEx(yeah), '');
+            await writeFile('beforewebsite/grabs.txt', newValue, 'utf-8');
+        }
+    }
     if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-      filePath = `audio-files/${word}-${numMinusOne}.wav`;
-    } else {
-      filePath = `audio-files/${word}-${numMinusOne}-${vari}.wav`;
-    }
-
-    try {
-      await fs.access(filePath); 
-      console.log("Good they have done the word before");
-    } catch (err) {
-      console.log("OH GOD");
-      c.status(400);
-      return c.text("You must do all pronunciations.");
-    }
-  }
-
-  const wordsTxtList = (await readFile(join(__dirname, 'words.txt'), 'utf-8')).trim().split("\n");
-  if(wordsTxtList.includes(word.trim())) {
-    c.status(400);
-    return c.text("Sorgy this word already exists")
-  }
-
-  if (num === 10) {
-    if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-    try {
-      await appendFile('words.txt', word + '\n');
-    } catch {
-      c.status(500);
-      return c.text("Error saving file");
-    }
-  } else { 
-      try {
-      await appendFile('words.txt', word + "-" + `${vari}` + '\n');
-    } catch {
-      c.status(500);
-      return c.text("Error saving file");
-    }
-  }
-}
-if (num === 10) {
-  let data = fs.readFileSync('beforewebsite/grabs.txt', 'utf-8');
-  let yeah = `${word}`;
-   const grabwords = (await readFile(join(__dirname, 'beforewebsite/grabs.txt'), 'utf-8')).trim().split("\n");
-  if(grabwords.includes(word.trim())) {
-   let newValue = data.replace(new RegEx(yeah), '');
-   await writeFile ('beforewebsite/grabs.txt', newValue, 'utf-8');
-}
-
-  if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-    await writeFile(`audio-files/${word}-${num}.wav`, Buffer.from(await audio.arrayBuffer()));
-    return c.json({ message: "The file was saved" });
-  } else {
-    await writeFile(`audio-files/${word}-${num}-${vari}.wav`, Buffer.from(await audio.arrayBuffer()));
-    return c.json({ message: "The file was saved" });
-  }
-}
+            await writeFile(`audio-files/${word}-${num}.wav`, Buffer.from(await audio.arrayBuffer()));
+            return c.json({
+                message: "The file was saved"
+            });
+        } else {
+            await writeFile(`audio-files/${word}-${num}-${vari}.wav`, Buffer.from(await audio.arrayBuffer()));
+            return c.json({
+                message: "The file was saved"
+            });
+        };
 });
 
 app.post("/beforewebsite/stats/api/whatever", async (c) => {
