@@ -1,6 +1,7 @@
+
 import {Hono} from 'hono';
 import { serve } from '@hono/node-server'
-import { writeFile, appendFile, readFile }  from 'fs/promises';
+import { writeFile, appendFile, readFile, access }  from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -176,10 +177,10 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
         }
 
         try {
-            await fs.access(filePath);
+            await access(filePath);
             console.log("Good they have done the word before");
         } catch (err) {
-            console.log("OH GOD");
+            console.log("OH GOD", err, filePath, word, num, import.meta || __dirname);
             c.status(400);
             return c.text("You must do all pronunciations.");
         }
