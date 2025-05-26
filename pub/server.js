@@ -21,15 +21,19 @@ app.post("/beforewebsite/api/check-word", async(c) => {
     return c.text("Error reading words file");
   }
 
-  for(const word of text.split(" ")) {
-    if (word && !allowedWords.includes(word.toLowerCase())) {
-      if (word && !allowedWords.includes(word.toLowerCase() + `-1`)) {
-        return c.redirect("/beforewebsite/add?word=" + encodeURIComponent(text) );
-      }
-    }
+for (const word of text.split(" ")) {
+  const lowerWord = word.toLowerCase();
+  if (
+    word &&
+    !allowedWords.includes(lowerWord) &&
+    !allowedWords.includes(`${lowerWord}-1`) &&
+    !allowedWords.includes(`${lowerWord}-2`)
+  ) {
+    return c.redirect("/beforewebsite/add?word=" + encodeURIComponent(text));
   }
-  return c.text("very good, its all in words.txt");
-})
+}
+return c.text("very good, its all in words.txt");
+});
 
 app.post("/beforewebsite/whichword", async (c) => {
   // Read heteronyms.txt from the filesystem, not via fetch
@@ -168,21 +172,18 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
 
     if (num > 1) {
         let filePath;
-
-
         if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
             filePath = `audio-files/${word}-${numMinusOne}.wav`;
         } else {
             filePath = `audio-files/${word}-${numMinusOne}-${vari}.wav`;
         }
-
         try {
             await access(filePath);
             console.log("Good they have done the word before");
         } catch (err) {
             console.log("OH GOD", err, filePath, word, num, import.meta || __dirname);
             c.status(400);
-            return c.text("You must do all pronunciations.");
+            return c.text("You must do all pronunciations. File not saved.");
         }
     }
 
@@ -192,42 +193,72 @@ app.post(`/beforewebsite/fun/intonation1`, async (c) => {
         return c.text("Sorgy this word already exists")
     }
 
-    if (num === 10) {
-        if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-            try {
-                await appendFile('words.txt', word + '\n');
-            } catch {
-                c.status(500);
-                return c.text("Error saving file");
-            }
-        } else {
-            try {
-                await appendFile('words.txt', word + "-" + `${vari}` + '\n');
-            } catch {
-                c.status(500);
-                return c.text("Error saving file");
-            }
-        }
+    // Always save the audio file for num 1-10
+    let audioFilePath;
+    if (
+        vari === undefined ||
+        vari === null ||
+        vari === "null" ||
+        vari === "" ||
+        vari === "0"
+    ) {
+        audioFilePath = `audio-files/${word}-${num}.wav`;
+    } else {
+        audioFilePath = `audio-files/${word}-${num}-${vari}.wav`;
+    }
 
-        let data = fs.readFileSync('beforewebsite/grabs.txt', 'utf-8');
-        let yeah = `${word}`;
-        const grabwords = (await readFile(join(__dirname, 'beforewebsite/grabs.txt'), 'utf-8')).trim().split("\n");
-        if (grabwords.includes(word.trim())) {
-            let newValue = data.replace(new RegEx(yeah), '');
-            await writeFile('beforewebsite/grabs.txt', newValue, 'utf-8');
+    if (num < 10) {
+        await writeFile(
+            audioFilePath,
+            Buffer.from(await audio.arrayBuffer())
+        );
+        return c.json({
+            message: "The file was saved",
+        });
+    } else {
+        let nineword = `audio-files/${word}-9.wav`;
+        try {
+            await access(nineword);
+            await writeFile(
+                audioFilePath,
+                Buffer.from(await audio.arrayBuffer())
+            );
+            // Append to words.txt
+            if (
+                vari === undefined ||
+                vari === null ||
+                vari === "null" ||
+                vari === "" ||
+                vari === "0"
+            ) {
+                await appendFile("words.txt", word + "\n");
+            } else {
+                await appendFile("words.txt", word + "-" + `${vari}` + "\n");
+            }
+            // Remove from grabs.txt if present
+            let data = "";
+            try {
+                data = fs.readFileSync("beforewebsite/grabs.txt", "utf-8");
+            } catch {}
+            let yeah = `${word}`;
+            const grabwords = (
+                await readFile(join(__dirname, "beforewebsite/grabs.txt"), "utf-8")
+            )
+                .trim()
+                .split("\n");
+            if (grabwords.includes(word.trim())) {
+                let newValue = data.replace(new RegExp(`^${yeah}\\n?`, 'm'), '');
+                await writeFile("beforewebsite/grabs.txt", newValue, "utf-8");
+            }
+            return c.json({
+                message: "The file was saved",
+            });
+        } catch (err) {
+            return c.text(
+                "You must do all pronunciations. File not saved to word list."
+            );
         }
     }
-    if (vari === undefined || vari === null || vari === "null" || vari === "" || vari === "0") {
-            await writeFile(`audio-files/${word}-${num}.wav`, Buffer.from(await audio.arrayBuffer()));
-            return c.json({
-                message: "The file was saved"
-            });
-        } else {
-            await writeFile(`audio-files/${word}-${num}-${vari}.wav`, Buffer.from(await audio.arrayBuffer()));
-            return c.json({
-                message: "The file was saved"
-            });
-        };
 });
 
 app.post("/beforewebsite/stats/api/whatever", async (c) => {

@@ -227,13 +227,13 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
     const checkButton = document.getElementById('checkbutton');
 
     const playWordAudio = async (word, i, heteronym) => {
-        word = word.replace(/[^a-zA-Z0-9-]/g, ''); // oh ok
+        word = word.replace(/[^a-zA-Z0-9-]/g, ''); 
         const res = await fetch("/beforewebsite/api/check-word", {
           method: "POST",
           body: word
         })
         if(res.redirected) {
-          window.location.href = res.url; // this is a redirect
+          window.location.href = res.url; 
         }
         if (word) {
           const lastIntoElem = document.getElementById('lastinto');

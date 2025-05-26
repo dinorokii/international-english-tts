@@ -99,7 +99,9 @@ function closeNav() {
 
 </script>
   <h1>Recordin' time!</h1>
+  <p id="intonationteller">Intonation  /10</p>
   <p id="wordchosen">Word Chosen:</p>
+  <br>
   <p>Please record like the following intonation:</p>
   <audio id="exampleplay" controls>
     <source id="example" src= "/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
@@ -214,7 +216,7 @@ async function saveToServer(blob) {
 
     setTimeout(() => {
       mediaRecorder.stop();
-      recordButton.textContent = "Start Recording";
+      recordButton.textContent = "Rerecord";
       showButton();
       if (parseInt(num, 10) < 10) {
         showText();
@@ -325,7 +327,7 @@ async function saveToServer(blob) {
     if (num < 10) {
       document.getElementById("moveonbutton").onclick = function () {
         let nextNum = parseInt(params.get('num') || '1', 10) + 1;
-        location.href = "/beforewebsite/fun/intonation1?word=" + encodeURIComponent(word) + "&num=" + nextNum;
+        location.href = "/beforewebsite/fun/intonation1?word=" + encodeURIComponent(word) + "&num=" + nextNum + "&vari=0";
       };
     } else {
       document.getElementById("moveonbutton").onclick = function () {
@@ -365,6 +367,10 @@ async function saveToServer(blob) {
       };
     }, 60000);
 
+
+  if (word) {
+      document.getElementById('intonationteller').textContent = `Intonation ${num}/10`;
+  }
   </script>
 </body>
 </html>
