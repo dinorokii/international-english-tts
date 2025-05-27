@@ -278,7 +278,8 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
                 selectedOptions.push({
                     word: words[i].toLowerCase(),
                     intonation: selectedText,
-                    heteronym: heteronymSelect?.options?.[heteronymSelect.selectedIndex].value
+                    heteronym: heteronymSelect?.options?.[heteronymSelect.selectedIndex].value,
+                    index: heteronyms.indexOf(words[i].toLowerCase())
                 });
             }
         }
@@ -296,6 +297,30 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
   </script>
   <div id="dropdown-container"></div>
 <br>
+<br>
+<br>
+<div style="display: none; justify-content: center; align-items: center; flex-direction: column;">
+  <table id="table">
+    <tr>
+      <th>Number</th>
+      <th>Definition</th>
+      <th>Pronunciation</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td></td>
+       <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+      <td>2</td>
+      <td></td>
+       <td><audio controls>
+        <source id="example" src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+      </audio></td>
+    </tr>
+  </table>
+</div>
 <br>
 <br>
 <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
