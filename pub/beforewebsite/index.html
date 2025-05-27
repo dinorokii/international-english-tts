@@ -78,6 +78,12 @@
   border-style: solid;
   padding: 20px;
 }
+
+.drophetero {
+  border-radius: 25px;
+  border-color: lightgrey;
+  border-style: solid;
+  padding: 5px;}
   </style>
 </head>
 <body>
@@ -205,7 +211,8 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
 
   const select = document.createElement('select');
   select.name = `heteronym-dropdown-${i + 1}`; 
-  select.id = `heteronym-dropdown-${i + 1}`; 
+  select.id = `heteronym-dropdown-${i + 1}`;
+  select.className = `drophetero heteronym-dropdown-${i + 1}`;
 
 
   const option1 = document.createElement('option');
@@ -259,6 +266,15 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
                     audioElement.play().catch(reject);
                 });
             }
+             if (word && !heteronyms.includes(word.toLowerCase())) {
+              document.getElementById("table2").style.display = "none";
+              } else {
+               document.getElementById("table2").style.display = "flex";
+                const audioSource1 = document.getElementById('pron1');
+                audioSource1.setAttribute('src', `/beforewebsite/whichword/heteronyms/${word}-1.mp3`);
+                const audioSource2 = document.getElementById('pron2');
+                audioSource2.setAttribute('src', `/beforewebsite/whichword/heteronyms/${word}-2.mp3`);
+                }
         }
     };
 
@@ -294,12 +310,14 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
             await playWordAudio(opt.word, opt.intonation, opt.heteronym)
         }
     });
+
+
   </script>
   <div id="dropdown-container"></div>
 <br>
 <br>
 <br>
-<div style="display: none; justify-content: center; align-items: center; flex-direction: column;">
+<div id="table2" style="display: none; justify-content: center; align-items: center; flex-direction: column;">
   <table id="table">
     <tr>
       <th>Number</th>
@@ -310,13 +328,13 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
       <td>1</td>
       <td></td>
        <td><audio controls>
-        <source id="example" src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+        <source id="pron1" src="/beforewebsite/whichword/heteronyms/1.mp3" type="audio/mpeg">
       </audio></td>
     </tr>
       <td>2</td>
       <td></td>
        <td><audio controls>
-        <source id="example" src="/beforewebsite/fun/intonation1/1.mp3" type="audio/mpeg">
+        <source id="pron2" src="/beforewebsite/whichword/heteronyms/1.mp3" type="audio/mpeg">
       </audio></td>
     </tr>
   </table>
@@ -402,7 +420,5 @@ if(word && !heteronyms.includes(word.toLowerCase())) continue;
     </tr>
   </table>
 </div>
-<br>
-<br>
 </body>
 </html>
